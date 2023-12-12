@@ -1,5 +1,7 @@
-const db = require('./client');
-const { createUser } = require('./users');
+require('dotenv').config()
+
+const db = require('./client')
+const { createUser } = require('./users')
 
 const users = [
   {
@@ -28,58 +30,58 @@ const users = [
     password: 'password123',
   },
   // Add more user objects as needed
-];  
+]
 
 const dropTables = async () => {
-    try {
-        await db.query(`
+  try {
+    await db.query(`
         DROP TABLE IF EXISTS users;
         `)
-    }
-    catch(err) {
-        throw err;
-    }
+  } catch (err) {
+    throw err
+  }
 }
 
 const createTables = async () => {
-    try{
-        await db.query(`
+  try {
+    await db.query(`
         CREATE TABLE users(
             id SERIAL PRIMARY KEY,
             name VARCHAR(255) DEFAULT 'name',
             email VARCHAR(255) UNIQUE NOT NULL,
             password VARCHAR(255) NOT NULL
         )`)
-    }
-    catch(err) {
-        throw err;
-    }
+  } catch (err) {
+    throw err
+  }
 }
 
 const insertUsers = async () => {
   try {
     for (const user of users) {
-      await createUser({name: user.name, email: user.email, password: user.password});
+      await createUser({
+        name: user.name,
+        email: user.email,
+        password: user.password,
+      })
     }
-    console.log('Seed data inserted successfully.');
+    console.log('Seed data inserted successfully.')
   } catch (error) {
-    console.error('Error inserting seed data:', error);
+    console.error('Error inserting seed data:', error)
   }
-};
+}
 
 const seedDatabse = async () => {
-    try {
-        db.connect();
-        await dropTables();
-        await createTables();
-        await insertUsers();
-    }
-    catch (err) {
-        throw err;
-    }
-    finally {
-        db.end()
-    }
+  try {
+    db.connect()
+    await dropTables()
+    await createTables()
+    await insertUsers()
+  } catch (err) {
+    throw err
+  } finally {
+    db.end()
+  }
 }
 
 seedDatabse()
